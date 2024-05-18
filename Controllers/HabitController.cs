@@ -2,12 +2,13 @@
 using HabitifyBackend.Dto;
 using HabitifyBackend.Interfaces;
 using HabitifyBackend.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HabitifyBackend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("")]
     [ApiController]
     public class HabitController : ControllerBase
     {
@@ -21,9 +22,11 @@ namespace HabitifyBackend.Controllers
 
         }
 
-        [HttpGet]
-        [ProducesResponseType(200, Type=typeof(IEnumerable<Habit>))]
-        [ProducesResponseType(400)]
+        [Authorize]
+        [HttpGet("getAllHabits")]
+        [ProducesResponseType(200, Type=typeof(IEnumerable<Habit>))] // Ok
+        [ProducesResponseType(400)] // BadRequest
+        [ProducesResponseType(401)] // Authorization
         public async Task<IActionResult> GetHabits() 
         {
             var habits = await _habitRepository.GetHabits();
@@ -33,9 +36,27 @@ namespace HabitifyBackend.Controllers
             return Ok(_mapper.Map<List<HabitDto>>(habits));
         }
 
-        [HttpPost]
-        [ProducesResponseType(204)]
-        [ProducesResponseType(400)]
+        [Authorize]
+        [HttpGet("getHabit/{id}")]
+        [ProducesResponseType(200, Type = typeof(Habit))] // Ok
+        [ProducesResponseType(400)] // BadRequest
+        [ProducesResponseType(401)] // Authorization
+        public IActionResult GetHabit(int id)
+        {
+            var habit = _habitRepository.GetHabit(id);
+
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if(habit == null) return NotFound();
+
+            return Ok(_mapper.Map<HabitDto>(habit));
+        }
+
+        [Authorize]
+        [HttpPost("createNewHabit")]
+        [ProducesResponseType(201)] // Created
+        [ProducesResponseType(400)] // BadRequest
+        [ProducesResponseType(401)] // Authorization
         public async Task<IActionResult> CreateHabitAsync([FromBody] HabitDto habitDto)
         {
             if (habitDto == null) return BadRequest(ModelState);
@@ -53,6 +74,23 @@ namespace HabitifyBackend.Controllers
             if(!result) return StatusCode(500, "An error occured while creating the Habit");
 
             return Ok("Habit Created :)");
+        }
+
+        [Authorize]
+        [HttpPost("deletehabit/{id}")]
+        [ProducesResponseType(204)] // No Content
+        [ProducesResponseType(400)] // BadRequest
+        [ProducesResponseType(401)] // Authorization
+        public IActionResult DeleteHabit(int id)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            if(!_habitRepository.DeleteHabit(id))
+            {
+                return StatusCode(500, "An error occured while deleting the Habit");
+            }
+
+            return Ok($"Habit {id} deleted");
         }
     }
 }

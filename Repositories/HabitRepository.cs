@@ -34,14 +34,28 @@ namespace HabitifyBackend.Repositories
             return await _dataContext.SaveChangesAsync() > 0;
         }
 
+        // Consider adding a soft delete functionality
+        // Change from bool to int and return status codes ?? instead of just true or false
         public bool DeleteHabit(int id)
         {
-            throw new NotImplementedException();
+            if(!HabitExists(id)) return false;
+
+            var habit = _dataContext.Habits.Where(h => h.Id == id).First();
+
+            _dataContext.Habits.Remove(habit);
+
+            return _dataContext.SaveChanges() > 0;
         }
 
         public Habit GetHabit(int id)
         {
-            throw new NotImplementedException();
+            // Possibly add in check to see if habit belongs to a user, but shouldn't
+            // be an issue as user will only ever see their habits.
+            var habit = _dataContext.Habits.Where(h => h.Id == id).FirstOrDefault();
+
+            if (habit == null) return null;
+
+            return habit;
         }
 
         public async Task<ICollection<Habit>> GetHabits()
@@ -53,7 +67,7 @@ namespace HabitifyBackend.Repositories
 
         public bool HabitExists(int id)
         {
-            throw new NotImplementedException();
+            return _dataContext.Habits.Where(h => h.Id == id).Count() > 0;
         }
 
         public bool UpdateHabit(Habit h)
