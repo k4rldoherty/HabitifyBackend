@@ -1,0 +1,6 @@
+@HabitifyBackend_HostAddress = http://localhost:5085
+
+GET {{HabitifyBackend_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
