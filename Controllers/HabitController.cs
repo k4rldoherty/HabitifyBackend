@@ -77,7 +77,7 @@ namespace HabitifyBackend.Controllers
         }
 
         [Authorize]
-        [HttpPost("deletehabit/{id}")]
+        [HttpPost("deleteHabit/{id}")]
         [ProducesResponseType(204)] // No Content
         [ProducesResponseType(400)] // BadRequest
         [ProducesResponseType(401)] // Authorization
@@ -91,6 +91,24 @@ namespace HabitifyBackend.Controllers
             }
 
             return Ok($"Habit {id} deleted");
+        }
+
+        [Authorize]
+        [HttpPut("updateHabit/{id}")]
+        [ProducesResponseType(204)] // No Content
+        [ProducesResponseType(400)] // BadRequest
+        [ProducesResponseType(401)] // Authorization
+        public IActionResult UpdateHabit(int id, [FromBody] HabitDto habitToUpdate)
+        {
+            if(!ModelState.IsValid) return BadRequest(ModelState);
+
+
+            if (!_habitRepository.UpdateHabit(id, habitToUpdate))
+            {
+                return StatusCode(500, "Something went wrong when updating the habit");
+            }
+
+            return Ok($"Habit {id} updated");
         }
     }
 }

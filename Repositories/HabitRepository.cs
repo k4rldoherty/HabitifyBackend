@@ -1,4 +1,5 @@
 ﻿using HabitifyBackend.Data;
+using HabitifyBackend.Dto;
 using HabitifyBackend.Interfaces;
 using HabitifyBackend.Models;
 using Microsoft.AspNetCore.Identity;
@@ -70,9 +71,17 @@ namespace HabitifyBackend.Repositories
             return _dataContext.Habits.Where(h => h.Id == id).Count() > 0;
         }
 
-        public bool UpdateHabit(Habit h)
+        public bool UpdateHabit(int id, HabitDto h)
         {
-            throw new NotImplementedException();
+            var habit = _dataContext.Habits.Where(h => h.Id == id).FirstOrDefault();
+
+            if (habit == null) return false;
+
+            habit.Name = h.Name;
+            habit.Description = h.Description;
+            habit.Frequency = h.Frequency;
+
+            return _dataContext.SaveChanges() > 0;
         }
     }
 }

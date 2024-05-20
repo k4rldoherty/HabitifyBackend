@@ -1,4 +1,5 @@
-﻿using HabitifyBackend.Models;
+﻿using HabitifyBackend.Dto;
+using HabitifyBackend.Models;
 
 namespace HabitifyBackend.Interfaces
 {
@@ -8,7 +9,7 @@ namespace HabitifyBackend.Interfaces
         Task<ICollection<Habit>> GetHabits();
         Habit GetHabit(int id);
         Task<bool> CreateHabit(Habit h);
-        bool UpdateHabit(Habit h);
+        bool UpdateHabit(int id, HabitDto newH);
         bool DeleteHabit(int id);
     }
 }
