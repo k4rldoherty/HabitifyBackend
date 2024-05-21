@@ -9,8 +9,10 @@ namespace HabitifyBackend.Models
         public string Name { get; set; }
         public string? Description { get; set; }
         public int Frequency { get; set; }
+        public bool IsCompleteDaily { get; set; }
+        public bool IsCompleteWeekly { get; set; }
         public string UserId { get; set; }
-
         public User User { get; set; }
+        public ICollection<HabitLog> HabitLogs { get; set; }
     }
 }

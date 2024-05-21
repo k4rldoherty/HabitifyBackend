@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HabitifyBackend.Controllers
 {
-    [Route("")]
+    [Route("api/")]
     [ApiController]
     public class HabitController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace HabitifyBackend.Controllers
         }
 
         [Authorize]
-        [HttpGet("getAllHabits")]
+        [HttpGet("habits")]
         [ProducesResponseType(200, Type=typeof(IEnumerable<Habit>))] // Ok
         [ProducesResponseType(400)] // BadRequest
         [ProducesResponseType(401)] // Authorization
@@ -33,11 +33,11 @@ namespace HabitifyBackend.Controllers
 
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            return Ok(_mapper.Map<List<HabitDto>>(habits));
+            return Ok(_mapper.Map<List<HabitGetDto>>(habits));
         }
 
         [Authorize]
-        [HttpGet("getHabit/{id}")]
+        [HttpGet("habit/{id}")]
         [ProducesResponseType(200, Type = typeof(Habit))] // Ok
         [ProducesResponseType(400)] // BadRequest
         [ProducesResponseType(401)] // Authorization
@@ -49,11 +49,11 @@ namespace HabitifyBackend.Controllers
 
             if(habit == null) return NotFound();
 
-            return Ok(_mapper.Map<HabitDto>(habit));
+            return Ok(_mapper.Map<HabitGetDto>(habit));
         }
 
         [Authorize]
-        [HttpPost("createNewHabit")]
+        [HttpPost("habit")]
         [ProducesResponseType(201)] // Created
         [ProducesResponseType(400)] // BadRequest
         [ProducesResponseType(401)] // Authorization
@@ -77,7 +77,7 @@ namespace HabitifyBackend.Controllers
         }
 
         [Authorize]
-        [HttpPost("deleteHabit/{id}")]
+        [HttpPost("deletehabit/{id}")]
         [ProducesResponseType(204)] // No Content
         [ProducesResponseType(400)] // BadRequest
         [ProducesResponseType(401)] // Authorization

@@ -9,6 +9,7 @@ namespace HabitifyBackend.Helper
         public MappingProfiles() 
         {
             CreateMap<Habit, HabitDto>().ReverseMap();
+            CreateMap<Habit, HabitGetDto>().ReverseMap();
         }
     }
 }

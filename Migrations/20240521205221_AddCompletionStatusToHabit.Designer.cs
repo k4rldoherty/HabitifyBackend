@@ -4,6 +4,7 @@ using HabitifyBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HabitifyBackend.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20240521205221_AddCompletionStatusToHabit")]
+    partial class AddCompletionStatusToHabit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,37 +58,6 @@ namespace HabitifyBackend.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Habits");
-                });
-
-            modelBuilder.Entity("HabitifyBackend.Models.HabitLog", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comment")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("CompletionTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("HabitId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HabitId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("HabitLogs");
                 });
 
             modelBuilder.Entity("HabitifyBackend.Models.User", b =>
@@ -297,25 +269,6 @@ namespace HabitifyBackend.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("HabitifyBackend.Models.HabitLog", b =>
-                {
-                    b.HasOne("HabitifyBackend.Models.Habit", "Habit")
-                        .WithMany("HabitLogs")
-                        .HasForeignKey("HabitId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("HabitifyBackend.Models.User", "User")
-                        .WithMany("HabitLogs")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Habit");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -367,15 +320,8 @@ namespace HabitifyBackend.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("HabitifyBackend.Models.Habit", b =>
-                {
-                    b.Navigation("HabitLogs");
-                });
-
             modelBuilder.Entity("HabitifyBackend.Models.User", b =>
                 {
-                    b.Navigation("HabitLogs");
-
                     b.Navigation("Habits");
                 });
 #pragma warning restore 612, 618
