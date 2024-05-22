@@ -1,4 +1,4 @@
-﻿namespace HabitifyBackend.Models
+﻿namespace HabitifyBackend.DAL.Models
 {
     public class HabitLog
     {

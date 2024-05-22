@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace HabitifyBackend.Models
+namespace HabitifyBackend.DAL.Models
 {
     public class Habit
     {

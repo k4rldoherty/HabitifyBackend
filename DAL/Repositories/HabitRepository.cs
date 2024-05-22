@@ -1,11 +1,11 @@
-﻿using HabitifyBackend.Data;
+﻿using HabitifyBackend.DAL.Data;
+using HabitifyBackend.DAL.Interfaces;
+using HabitifyBackend.DAL.Models;
 using HabitifyBackend.Dto;
-using HabitifyBackend.Interfaces;
-using HabitifyBackend.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace HabitifyBackend.Repositories
+namespace HabitifyBackend.DAL.Repositories
 {
     public class HabitRepository : IHabitRepository
     {
@@ -24,6 +24,22 @@ namespace HabitifyBackend.Repositories
             return await _userManager.GetUserAsync(_httpContextAccessor.HttpContext.User);
         }
 
+        public async Task<ICollection<Habit>> GetHabitsAsync(string userId)
+        {
+            return await _dataContext.Habits.Where(h => h.UserId == userId).ToListAsync();
+        }
+
+        public async Task<Habit> GetHabitAsync(int id, string userId)
+        {
+            // Possibly add in check to see if habit belongs to a user, but shouldn't
+            // be an issue as user will only ever see their habits.
+            var habit = await _dataContext.Habits.Where(h => h.UserId == userId).Where(h => h.Id == id).FirstOrDefaultAsync();
+
+            if (habit == null) return null;
+
+            return habit;
+        }
+
         public async Task<bool> CreateHabit(Habit h)
         {
             var user = await GetUserAsync();
@@ -39,31 +55,13 @@ namespace HabitifyBackend.Repositories
         // Change from bool to int and return status codes ?? instead of just true or false
         public bool DeleteHabit(int id)
         {
-            if(!HabitExists(id)) return false;
+            if (!HabitExists(id)) return false;
 
             var habit = _dataContext.Habits.Where(h => h.Id == id).First();
 
             _dataContext.Habits.Remove(habit);
 
             return _dataContext.SaveChanges() > 0;
-        }
-
-        public Habit GetHabit(int id)
-        {
-            // Possibly add in check to see if habit belongs to a user, but shouldn't
-            // be an issue as user will only ever see their habits.
-            var habit = _dataContext.Habits.Where(h => h.Id == id).FirstOrDefault();
-
-            if (habit == null) return null;
-
-            return habit;
-        }
-
-        public async Task<ICollection<Habit>> GetHabits()
-        {
-            var user = await GetUserAsync();
-            if(user == null) return new List<Habit>();
-            return await _dataContext.Habits.Where(h => h.UserId == user.Id).ToListAsync();
         }
 
         public bool HabitExists(int id)

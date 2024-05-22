@@ -1,7 +1,9 @@
-using HabitifyBackend.Data;
-using HabitifyBackend.Interfaces;
-using HabitifyBackend.Models;
-using HabitifyBackend.Repositories;
+using HabitifyBackend.BLL.Interfaces;
+using HabitifyBackend.BLL.Services;
+using HabitifyBackend.DAL.Data;
+using HabitifyBackend.DAL.Interfaces;
+using HabitifyBackend.DAL.Models;
+using HabitifyBackend.DAL.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
@@ -29,6 +31,8 @@ builder.Services.AddSwaggerGen(options =>
 // Added this
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IHabitRepository, HabitRepository>();
+builder.Services.AddScoped<IHabitLogRepository, HabitLogRepository>();
+builder.Services.AddScoped<IHabitService, HabitService>();
 builder.Services.AddHttpContextAccessor();
 
 // Added this

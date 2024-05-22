@@ -1,39 +1,40 @@
 ﻿using AutoMapper;
+using HabitifyBackend.BLL.Interfaces;
+using HabitifyBackend.DAL.Interfaces;
+using HabitifyBackend.DAL.Models;
 using HabitifyBackend.Dto;
-using HabitifyBackend.Interfaces;
-using HabitifyBackend.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace HabitifyBackend.Controllers
+namespace HabitifyBackend.API.Controllers
 {
     [Route("api/")]
     [ApiController]
     public class HabitController : ControllerBase
     {
         private readonly IHabitRepository _habitRepository;
+        private readonly IHabitService _habitService;
         private readonly IMapper _mapper;
 
-        public HabitController(IHabitRepository habitRepository, IMapper mapper)
+        public HabitController(IHabitRepository habitRepository, IMapper mapper, IHabitService habitService)
         {
             _habitRepository = habitRepository;
             _mapper = mapper;
+            _habitService = habitService;
 
         }
 
         [Authorize]
         [HttpGet("habits")]
-        [ProducesResponseType(200, Type=typeof(IEnumerable<Habit>))] // Ok
+        [ProducesResponseType(200, Type = typeof(IEnumerable<Habit>))] // Ok
         [ProducesResponseType(400)] // BadRequest
         [ProducesResponseType(401)] // Authorization
-        public async Task<IActionResult> GetHabits() 
+        public async Task<IActionResult> GetHabits()
         {
-            var habits = await _habitRepository.GetHabits();
-
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            return Ok(_mapper.Map<List<HabitGetDto>>(habits));
+            var habits = await _habitService.GetHabitsAsync();
+            return Ok(habits);
         }
 
         [Authorize]
@@ -41,15 +42,15 @@ namespace HabitifyBackend.Controllers
         [ProducesResponseType(200, Type = typeof(Habit))] // Ok
         [ProducesResponseType(400)] // BadRequest
         [ProducesResponseType(401)] // Authorization
-        public IActionResult GetHabit(int id)
+        public async Task<IActionResult> GetHabit(int id)
         {
-            var habit = _habitRepository.GetHabit(id);
-
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if(habit == null) return NotFound();
+            var habit = await _habitService.GetHabitAsync(id);
 
-            return Ok(_mapper.Map<HabitGetDto>(habit));
+            if (habit == null) return NotFound();
+
+            return Ok(habit);
         }
 
         [Authorize]
@@ -71,7 +72,7 @@ namespace HabitifyBackend.Controllers
 
             var result = await _habitRepository.CreateHabit(habit);
 
-            if(!result) return StatusCode(500, "An error occured while creating the Habit");
+            if (!result) return StatusCode(500, "An error occured while creating the Habit");
 
             return Ok("Habit Created :)");
         }
@@ -85,7 +86,7 @@ namespace HabitifyBackend.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            if(!_habitRepository.DeleteHabit(id))
+            if (!_habitRepository.DeleteHabit(id))
             {
                 return StatusCode(500, "An error occured while deleting the Habit");
             }
@@ -100,7 +101,7 @@ namespace HabitifyBackend.Controllers
         [ProducesResponseType(401)] // Authorization
         public IActionResult UpdateHabit(int id, [FromBody] HabitDto habitToUpdate)
         {
-            if(!ModelState.IsValid) return BadRequest(ModelState);
+            if (!ModelState.IsValid) return BadRequest(ModelState);
 
 
             if (!_habitRepository.UpdateHabit(id, habitToUpdate))

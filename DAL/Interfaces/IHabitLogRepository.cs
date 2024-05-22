@@ -1,6 +1,6 @@
 ﻿using HabitifyBackend.Dto;
 
-namespace HabitifyBackend.Interfaces
+namespace HabitifyBackend.DAL.Interfaces
 {
     public interface IHabitLogRepository
     {

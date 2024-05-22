@@ -1,16 +1,16 @@
-﻿using HabitifyBackend.Models;
+﻿using HabitifyBackend.DAL.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-namespace HabitifyBackend.Data
+namespace HabitifyBackend.DAL.Data
 {
     // Generates couple of tables used in auth
     public class DataContext : IdentityDbContext<User>
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options)
         {
-            
+
         }
 
         public DbSet<Habit> Habits { get; set; }
