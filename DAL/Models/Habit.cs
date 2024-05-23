@@ -13,6 +13,6 @@ namespace HabitifyBackend.DAL.Models
         public bool IsCompleteWeekly { get; set; }
         public string UserId { get; set; }
         public User User { get; set; }
-        public ICollection<HabitLog> HabitLogs { get; set; }
+        public ICollection<HabitLog>? HabitLogs { get; set; }
     }
 }

@@ -8,5 +8,6 @@ namespace HabitifyBackend.BLL.Interfaces
         // Habit Related Functions
         Task<ICollection<HabitGetDto>> GetHabitsAsync();
         Task<HabitGetDto> GetHabitAsync(int id);
+        Task<bool> CreateHabitAsync(HabitDto habit);
     }
 }

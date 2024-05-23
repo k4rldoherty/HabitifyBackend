@@ -8,7 +8,7 @@ namespace HabitifyBackend.DAL.Interfaces
         bool HabitExists(int id);
         Task<ICollection<Habit>> GetHabitsAsync(string userID);
         Task<Habit> GetHabitAsync(int id, string userId);
-        Task<bool> CreateHabit(Habit h);
+        Task<bool> CreateHabitAsync(Habit h);
         bool UpdateHabit(int id, HabitDto newH);
         bool DeleteHabit(int id);
     }

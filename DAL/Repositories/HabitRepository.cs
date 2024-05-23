@@ -40,14 +40,9 @@ namespace HabitifyBackend.DAL.Repositories
             return habit;
         }
 
-        public async Task<bool> CreateHabit(Habit h)
+        public async Task<bool> CreateHabitAsync(Habit h)
         {
-            var user = await GetUserAsync();
-            if (user == null) return false;
-            h.UserId = user.Id;
-
             await _dataContext.Habits.AddAsync(h);
-
             return await _dataContext.SaveChangesAsync() > 0;
         }
 

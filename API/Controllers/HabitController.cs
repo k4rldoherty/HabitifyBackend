@@ -45,11 +45,8 @@ namespace HabitifyBackend.API.Controllers
         public async Task<IActionResult> GetHabit(int id)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var habit = await _habitService.GetHabitAsync(id);
-
             if (habit == null) return NotFound();
-
             return Ok(habit);
         }
 
@@ -62,19 +59,9 @@ namespace HabitifyBackend.API.Controllers
         {
             if (habitDto == null) return BadRequest(ModelState);
             if (!ModelState.IsValid) return BadRequest(ModelState);
-
-            var habit = new Habit
-            {
-                Name = habitDto.Name,
-                Description = habitDto.Description,
-                Frequency = habitDto.Frequency
-            };
-
-            var result = await _habitRepository.CreateHabit(habit);
-
+            var result = await _habitService.CreateHabitAsync(habitDto);
             if (!result) return StatusCode(500, "An error occured while creating the Habit");
-
-            return Ok("Habit Created :)");
+            return Ok("Habit Created");
         }
 
         [Authorize]

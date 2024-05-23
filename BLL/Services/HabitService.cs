@@ -54,5 +54,21 @@ namespace HabitifyBackend.BLL.Services
 
             return _mapper.Map<HabitGetDto>(habit);
         }
+
+        public async Task<bool> CreateHabitAsync(HabitDto habitDto)
+        {
+            var user = await GetUserAsync();
+            Habit habit = new Habit()
+            {
+                UserId = user.Id,
+                Name = habitDto.Name,
+                Description = habitDto.Description,
+                Frequency = habitDto.Frequency,
+                User = user
+                // No HabitLogs Yet as new entry
+            };
+
+            return await _habitRepository.CreateHabitAsync(habit);
+        }
     }
 }
